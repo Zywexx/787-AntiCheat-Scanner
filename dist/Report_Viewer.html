@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>787 By Zywexx</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0A0E27 0%, #1a1e3a 100%);
+            color: #E0E0E0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(26, 30, 58, 0.8);
+            border: 2px solid #00FFEE;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 238, 0.3);
+        }
+        
+        h1 {
+            color: #00FFEE;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(0, 255, 238, 0.5);
+        }
+        
+        .file-input-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(42, 74, 106, 0.3);
+            border: 2px dashed #00FFEE;
+            border-radius: 8px;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #2a4a6a 0%, #1a3a5a 100%);
+            color: #00FFEE;
+            border: 2px solid #00FFEE;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #3a5a7a 0%, #2a4a6a 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 238, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: rgba(10, 14, 39, 0.5);
+            border: 1px solid #2a4a6a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .section h2 {
+            color: #00FFEE;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00FFEE;
+            padding-bottom: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            background: rgba(42, 74, 106, 0.2);
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #00FFEE;
+        }
+        
+        .info-label {
+            color: #00AAEE;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #E0E0E0;
+        }
+        
+        .findings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .findings-table th {
+            background: linear-gradient(135deg, #2a4a6a 0%, #1a3a5a 100%);
+            color: #00FFEE;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #2a4a6a;
+        }
+        
+        .findings-table td {
+            padding: 10px;
+            border: 1px solid #2a4a6a;
+        }
+        
+        .findings-table tr:hover {
+            background: rgba(42, 74, 106, 0.3);
+        }
+        
+        .severity-critical {
+            color: #FF0000;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .severity-high {
+            color: #FF4444;
+            font-weight: bold;
+        }
+        
+        .severity-medium {
+            color: #FFAA44;
+            font-weight: bold;
+        }
+        
+        .severity-low {
+            color: #AAAA44;
+            font-weight: bold;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+        
+        .badge-critical {
+            background: #FF0000;
+            color: white;
+        }
+        
+        .badge-high {
+            background: #FF4444;
+            color: white;
+        }
+        
+        .badge-medium {
+            background: #FFAA44;
+            color: black;
+        }
+        
+        .badge-low {
+            background: #AAAA44;
+            color: white;
+        }
+        
+        .filter-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(42, 74, 106, 0.5);
+            border: 1px solid #00FFEE;
+            border-radius: 4px;
+            color: #00FFEE;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(0, 255, 238, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 238, 0.3);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            background: rgba(10, 14, 39, 0.8);
+            border: 2px solid #2a4a6a;
+            border-radius: 4px;
+            color: #E0E0E0;
+            font-size: 14px;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #00FFEE;
+            box-shadow: 0 0 5px rgba(0, 255, 238, 0.3);
+        }
+        
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #2a4a6a 0%, #1a3a5a 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #00FFEE;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 0 15px rgba(0, 255, 238, 0.2);
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            color: #00FFEE;
+            font-weight: bold;
+        }
+        
+        .metric-label {
+            color: #AAAAAA;
+            margin-top: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .expandable {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .expandable:before {
+            content: '▶ ';
+            color: #00FFEE;
+        }
+        
+        .expandable.expanded:before {
+            content: '▼ ';
+        }
+        
+        .details {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(42, 74, 106, 0.2);
+            border-left: 3px solid #00AAEE;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Anti-Cheat Tarama Raporu</h1>
+        
+        <div class="file-input-section">
+            <input type="file" id="fileInput" accept=".enc,.json" />
+            <label for="fileInput" class="btn">📁 Rapor Yükle (Şifreli .enc veya JSON)</label>
+            <p id="fileName" style="margin-top: 10px; color: #00AAEE;"></p>
+            <div style="margin-top: 15px; color: #AAAAAA; font-size: 0.9em;">
+                💡 İpucu: reports/ klasöründeki .json.enc dosyasını seçin
+            </div>
+        </div>
+        
+        <div id="reportContent" class="hidden">
+            <!-- Summary Cards -->
+            <div class="section">
+                <h2>📊 Özet (Summary)</h2>
+                <div class="metrics" id="summaryCards"></div>
+            </div>
+            
+            <!-- Meta Information -->
+            <div class="section">
+                <h2>🕒 Tarama Bilgileri (Scan Info)</h2>
+                <div class="info-grid" id="metaInfo"></div>
+            </div>
+            
+            <!-- System Information -->
+            <div class="section">
+                <h2>💻 Sistem Bilgileri (System Info)</h2>
+                <div class="info-grid" id="systemInfo"></div>
+            </div>
+            
+            <!-- Analysis Metrics -->
+            <div class="section">
+                <h2>📈 Detaylı İstatistikler (Detailed Metrics)</h2>
+                <div class="info-grid" id="metricsInfo"></div>
+            </div>
+            
+            <!-- Findings -->
+            <div class="section">
+                <h2>🔍 Bulgular (Findings) <span id="findingsCount" style="font-size: 0.8em; color: #00AAEE;"></span></h2>
+                
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">📋 Tümü (All)</button>
+                    <button class="filter-btn" data-filter="critical">🔴 Kritik (Critical)</button>
+                    <button class="filter-btn" data-filter="high">🟠 Yüksek (High)</button>
+                    <button class="filter-btn" data-filter="medium">🟡 Orta (Medium)</button>
+                    <button class="filter-btn" data-filter="low">🟢 Düşük (Low)</button>
+                    <input type="text" class="search-box" id="searchBox" placeholder="🔎 Ara: anahtar kelime, dosya yolu, SHA-256..." />
+                </div>
+                
+                <table class="findings-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">ID</th>
+                            <th style="width: 120px;">Önem Derecesi<br/>(Severity)</th>
+                            <th style="width: 300px;">Özet (Summary)</th>
+                            <th style="width: 200px;">Anahtar Kelimeler<br/>(Keywords)</th>
+                            <th>Detaylar (Details)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="findingsTable"></tbody>
+                </table>
+            </div>
+            
+            <!-- Errors -->
+            <div class="section" id="errorsSection">
+                <h2>⚠️ Hatalar (Errors)</h2>
+                <div id="errorsContent"></div>
+            </div>
+            
+            <!-- Export Options -->
+            <div class="section" style="text-align: center;">
+                <button class="btn" onclick="exportToCSV()">📥 CSV Olarak Dışa Aktar</button>
+                <button class="btn" onclick="window.print()" style="margin-left: 10px;">🖨️ Yazdır</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let reportData = null;
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        async function decryptEnvelope(env, password) {
+            const enc = new TextEncoder();
+            const salt = Uint8Array.from(atob(env.salt), c => c.charCodeAt(0));
+            const iv = Uint8Array.from(atob(env.iv), c => c.charCodeAt(0));
+            const ciphertext = Uint8Array.from(atob(env.ciphertext), c => c.charCodeAt(0));
+
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+            );
+            const key = await crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['decrypt']
+            );
+
+            const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+            return new TextDecoder().decode(new Uint8Array(plainBuffer));
+        }
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('fileName').textContent = `Yükleniyor: ${file.name}`;
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                try {
+                    const text = event.target.result;
+                    let obj = null;
+                    try { obj = JSON.parse(text); } catch { obj = null; }
+                    
+                    if (obj && obj.salt && obj.iv && obj.ciphertext) {
+                        // Embedded password - no user input required
+                        const pwd = '787';
+                        const decryptedText = await decryptEnvelope(obj, pwd);
+                        reportData = JSON.parse(decryptedText);
+                    } else {
+                        // Fallback: plaintext JSON
+                        reportData = JSON.parse(text);
+                    }
+                    
+                    displayReport(reportData);
+                    document.getElementById('fileName').textContent = `✓ Yüklendi: ${file.name}`;
+                    document.getElementById('reportContent').classList.remove('hidden');
+                } catch (error) {
+                    alert('Rapor okuma hatası: ' + error.message);
+                    document.getElementById('fileName').textContent = '✗ Dosya yüklenemedi';
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        function displayReport(report) {
+            displaySummary(report);
+            displayMeta(report.meta);
+            displaySystem(report.system);
+            displayMetrics(report.analysis.metrics);
+            displayFindings(report.analysis.findings);
+            displayErrors(report.errors);
+        }
+        
+        function displaySummary(report) {
+            const metrics = report.analysis.metrics;
+            const findings = report.analysis.findings;
+            const criticalCount = findings.filter(f => f.severity === 'critical').length;
+            const highCount = metrics.high_severity_findings || 0;
+            const mediumCount = metrics.medium_severity_findings || 0;
+            const lowCount = metrics.low_severity_findings || 0;
+            const totalFindings = findings.length;
+            
+            let threatLevel = 'Düşük';
+            let threatColor = '#4CAF50';
+            if (criticalCount > 0) {
+                threatLevel = 'KRİTİK';
+                threatColor = '#FF0000';
+            } else if (highCount > 5) {
+                threatLevel = 'Yüksek';
+                threatColor = '#FF4444';
+            } else if (highCount > 0 || mediumCount > 10) {
+                threatLevel = 'Orta';
+                threatColor = '#FFAA44';
+            }
+            
+            const summaryDiv = document.getElementById('summaryCards');
+            summaryDiv.innerHTML = `
+                <div class="metric-card" style="border-color: ${threatColor}; min-width: 200px;">
+                    <div class="metric-value" style="color: ${threatColor}; font-size: 2.5em;">${threatLevel}</div>
+                    <div class="metric-label" style="font-size: 1.1em;">Tehdit Seviyesi</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${totalFindings}</div>
+                    <div class="metric-label">Toplam Bulgu</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value severity-critical">${criticalCount}</div>
+                    <div class="metric-label">Kritik</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value severity-high">${highCount}</div>
+                    <div class="metric-label">Yüksek Önem</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value severity-medium">${mediumCount}</div>
+                    <div class="metric-label">Orta Önem</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value severity-low">${lowCount}</div>
+                    <div class="metric-label">Düşük Önem</div>
+                </div>
+            `;
+        }
+        
+        function displayMeta(meta) {
+            const metaDiv = document.getElementById('metaInfo');
+            metaDiv.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">Rapor ID</div>
+                    <div class="info-value">${meta.report_id}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Uygulama Sürümü</div>
+                    <div class="info-value">${meta.app_version}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Tarama Başlangıcı</div>
+                    <div class="info-value">${new Date(meta.scan_start).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Tarama Bitişi</div>
+                    <div class="info-value">${new Date(meta.scan_end).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Bilgisayar Adı</div>
+                    <div class="info-value">${meta.host}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Tarama Süresi</div>
+                    <div class="info-value">${calculateDuration(meta.scan_start, meta.scan_end)}</div>
+                </div>
+            `;
+        }
+        
+        function displaySystem(system) {
+            const systemDiv = document.getElementById('systemInfo');
+            const ramGB = system.ram_total_bytes ? (system.ram_total_bytes / (1024**3)).toFixed(2) : 'N/A';
+            
+            systemDiv.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">HWID</div>
+                    <div class="info-value">${system.hwid}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">İşletim Sistemi</div>
+                    <div class="info-value">${system.os}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Mimari</div>
+                    <div class="info-value">${system.architecture}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">İşlemci</div>
+                    <div class="info-value">${system.cpu}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">RAM</div>
+                    <div class="info-value">${ramGB} GB</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Kullanıcı Adı</div>
+                    <div class="info-value">${system.username || 'Belirtilmemiş'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Bilgisayar Çalışma Süresi</div>
+                    <div class="info-value">${system.uptime_formatted || 'Belirtilmemiş'}</div>
+                </div>
+            `;
+        }
+        
+        function displayMetrics(metrics) {
+            const metricsDiv = document.getElementById('metricsInfo');
+            metricsDiv.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">📁 Taranan Dosya Sayısı</div>
+                    <div class="info-value">${(metrics.files_scanned || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🌐 Taranan Web Sayfası</div>
+                    <div class="info-value">${(metrics.browser_urls_checked || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">⚙️ Analiz Edilen İşlem</div>
+                    <div class="info-value">${(metrics.processes_analyzed || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🌐 Kontrol Edilen Bağlantı</div>
+                    <div class="info-value">${(metrics.network_connections_checked || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">📋 Prefetch Dosyası</div>
+                    <div class="info-value">${(metrics.prefetch_files_checked || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">📝 Olay Günlüğü Kaydı</div>
+                    <div class="info-value">${(metrics.event_logs_checked || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🔧 Doğrulanan DLL</div>
+                    <div class="info-value">${(metrics.dlls_verified || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">📋 Taranan Registry Anahtarı</div>
+                    <div class="info-value">${(metrics.registry_keys_scanned || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🎯 Toplam Eşleşme</div>
+                    <div class="info-value" style="color: #00FFEE; font-weight: bold;">${(metrics.total_matches || 0).toLocaleString('tr-TR')}</div>
+                </div>
+                ${metrics.self_integrity_violations ? `
+                <div class="info-item" style="border-left-color: #FF0000;">
+                    <div class="info-label">⚠️ Bütünlük İhlali</div>
+                    <div class="info-value" style="color: #FF0000; font-weight: bold;">EVET</div>
+                </div>
+                ` : ''}
+            `;
+        }
+        
+        function displayFindings(findings) {
+            renderFindings(findings);
+            
+            // Setup filters
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderFindings(findings);
+                });
+            });
+            
+            // Setup search
+            document.getElementById('searchBox').addEventListener('input', function(e) {
+                currentSearch = e.target.value.toLowerCase();
+                renderFindings(findings);
+            });
+        }
+        
+        function renderFindings(findings) {
+            const tbody = document.getElementById('findingsTable');
+            
+            let filtered = findings;
+            
+            // Apply severity filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(f => f.severity === currentFilter);
+            }
+            
+            // Apply search filter
+            if (currentSearch) {
+                filtered = filtered.filter(f => {
+                    const searchable = [
+                        f.summary,
+                        f.details,
+                        JSON.stringify(f.matched_keywords),
+                        JSON.stringify(f.file_info || {}),
+                        JSON.stringify(f.references || {})
+                    ].join(' ').toLowerCase();
+                    
+                    return searchable.includes(currentSearch);
+                });
+            }
+            
+            // Update findings count
+            document.getElementById('findingsCount').textContent = `(${filtered.length} / ${findings.length})`;
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px; color: #AAAAAA;">📋 Filtreye uygun bulgu yok</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(finding => {
+                const severityClass = `severity-${finding.severity}`;
+                const keywords = finding.matched_keywords && finding.matched_keywords.length > 0 
+                    ? finding.matched_keywords.map(k => `<span class="badge badge-${finding.severity}">${k}</span>`).join(' ') 
+                    : '<span style="color: #888;">-</span>';
+                
+                return `
+                    <tr>
+                        <td style="font-weight: bold;">${finding.id}</td>
+                        <td class="${severityClass}">${getSeverityLabel(finding.severity)}</td>
+                        <td>${finding.summary}</td>
+                        <td>${keywords}</td>
+                        <td>
+                            <div class="expandable" onclick="toggleDetails(this)">
+                                📄 Detayları Göster
+                            </div>
+                            <div class="details hidden">
+                                <strong>📝 Açıklama:</strong><br/>
+                                ${finding.details}<br/><br/>
+                                ${finding.file_info ? `
+                                    <strong>📁 Dosya Bilgisi:</strong><br/>
+                                    <strong>Yol:</strong> ${finding.file_info.path || 'Belirtilmemiş'}<br/>
+                                    <strong>Boyut:</strong> ${formatBytes(finding.file_info.size_bytes || finding.file_info.size || 0)}<br/>
+                                    ${finding.file_info.sha256 ? `<strong>SHA-256:</strong> <code style="color: #00FFEE;">${finding.file_info.sha256}</code><br/>` : ''}
+                                    ${finding.file_info.modified_time || finding.file_info.modified ? `<strong>Değiştirilme:</strong> ${new Date(finding.file_info.modified_time || finding.file_info.modified).toLocaleString('tr-TR')}<br/>` : ''}
+                                ` : ''}
+                                ${finding.process_info ? `
+                                    <strong>⚙️ İşlem Bilgisi:</strong><br/>
+                                    <strong>İsim:</strong> ${finding.process_info.name}<br/>
+                                    <strong>PID:</strong> ${finding.process_info.pid}<br/>
+                                    <strong>CPU:</strong> ${finding.process_info.cpu_percent}%<br/>
+                                    <strong>Çalışma Süresi:</strong> ${finding.process_info.runtime_formatted}<br/>
+                                ` : ''}
+                                ${finding.connection_info ? `
+                                    <strong>🌐 Bağlantı Bilgisi:</strong><br/>
+                                    <strong>İşlem:</strong> ${finding.connection_info.process_name} (PID: ${finding.connection_info.pid})<br/>
+                                    <strong>Yerel:</strong> ${finding.connection_info.local_addr}:${finding.connection_info.local_port}<br/>
+                                    <strong>Uzak:</strong> ${finding.connection_info.remote_addr}:${finding.connection_info.remote_port}<br/>
+                                    <strong>Durum:</strong> ${finding.connection_info.status}<br/>
+                                ` : ''}
+                                ${finding.dll_info ? `
+                                    <strong>🔧 DLL Bilgisi:</strong><br/>
+                                    <strong>İmza:</strong> ${finding.dll_info.signature_status}<br/>
+                                    <strong>Geçerli:</strong> ${finding.dll_info.signature_valid ? 'Evet' : 'Hayır'}<br/>
+                                ` : ''}
+                                ${finding.registry_info ? `
+                                    <strong>📋 Registry Bilgisi:</strong><br/>
+                                    <strong>Konum:</strong> ${finding.registry_info.location}<br/>
+                                    <strong>Anahtar:</strong> ${finding.registry_info.key_path}<br/>
+                                    <strong>Değer:</strong> ${finding.registry_info.value_name}<br/>
+                                ` : ''}
+                                <br/>
+                                <strong>🔗 Kaynaklar:</strong><br/>
+                                <pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(finding.references, null, 2)}</pre>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function toggleDetails(element) {
+            element.classList.toggle('expanded');
+            const details = element.nextElementSibling;
+            details.classList.toggle('hidden');
+        }
+        
+        function displayErrors(errors) {
+            const errorsDiv = document.getElementById('errorsContent');
+            
+            if (!errors || errors.length === 0) {
+                errorsDiv.innerHTML = '<p style="color: #4CAF50; text-align: center; padding: 20px;">✓ Tarama sırasında hata oluşmadı</p>';
+                return;
+            }
+            
+            errorsDiv.innerHTML = errors.map(err => `
+                <div class="info-item" style="border-left-color: #FF4444; margin-bottom: 10px;">
+                    <div class="info-label">⚠️ Modül: ${err.module}</div>
+                    <div class="info-value">${err.msg}</div>
+                </div>
+            `).join('');
+        }
+        
+        function calculateDuration(start, end) {
+            const diff = new Date(end) - new Date(start);
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            
+            if (hours > 0) {
+                return `${hours} saat ${minutes % 60} dakika ${seconds % 60} saniye`;
+            } else if (minutes > 0) {
+                return `${minutes} dakika ${seconds % 60} saniye`;
+            } else {
+                return `${seconds} saniye`;
+            }
+        }
+        
+        function getSeverityLabel(severity) {
+            const labels = {
+                'critical': '🔴 KRİTİK',
+                'high': '🟠 YÜKSEK',
+                'medium': '🟡 ORTA',
+                'low': '🟢 DÜŞÜK'
+            };
+            return labels[severity] || severity.toUpperCase();
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        function exportToCSV() {
+            if (!reportData) {
+                alert('Önce bir rapor yükleyin!');
+                return;
+            }
+            
+            const findings = reportData.analysis.findings;
+            let csv = 'ID,Önem Derecesi,Özet,Anahtar Kelimeler,Detaylar\n';
+            
+            findings.forEach(f => {
+                const keywords = (f.matched_keywords || []).join('; ');
+                const summary = f.summary.replace(/"/g, '""');
+                const details = f.details.replace(/"/g, '""');
+                csv += `"${f.id}","${f.severity}","${summary}","${keywords}","${details}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `report_${new Date().getTime()}.csv`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
